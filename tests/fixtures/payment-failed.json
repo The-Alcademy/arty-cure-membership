@@ -1,0 +1,14 @@
+{
+  "id": "evt_test_payment_failed_1",
+  "object": "event",
+  "type": "invoice.payment_failed",
+  "data": {
+    "object": {
+      "id": "in_test_failed_1",
+      "object": "invoice",
+      "customer": "cus_test_payfail_1",
+      "subscription": "sub_test_payfail_1",
+      "status": "open"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "evt_test_checkout_arty_1",
+  "object": "event",
+  "type": "checkout.session.completed",
+  "data": {
+    "object": {
+      "id": "cs_test_arty_1",
+      "object": "checkout.session",
+      "customer": "cus_test_arty_1",
+      "customer_email": "jane.arty@example.com",
+      "subscription": "sub_test_arty_1",
+      "mode": "subscription",
+      "metadata": {
+        "name": "Jane Arty",
+        "email": "jane.arty@example.com",
+        "club": "arty",
+        "signup_message": "",
+        "marketing_consent": "true"
+      }
+    }
+  }
+}

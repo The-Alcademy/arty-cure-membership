@@ -1,0 +1,29 @@
+{
+  "id": "evt_test_sub_updated_1",
+  "object": "event",
+  "type": "customer.subscription.updated",
+  "data": {
+    "object": {
+      "id": "sub_test_switch_1",
+      "object": "subscription",
+      "customer": "cus_test_switch_1",
+      "status": "active",
+      "items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "si_test_switch_1",
+            "object": "subscription_item",
+            "price": {
+              "id": "price_both_live",
+              "object": "price",
+              "metadata": { "club": "both" },
+              "product": { "id": "prod_both_live", "object": "product", "metadata": {} }
+            }
+          }
+        ]
+      },
+      "metadata": {}
+    }
+  }
+}

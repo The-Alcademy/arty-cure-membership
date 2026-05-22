@@ -1,0 +1,29 @@
+{
+  "id": "evt_test_sub_deleted_1",
+  "object": "event",
+  "type": "customer.subscription.deleted",
+  "data": {
+    "object": {
+      "id": "sub_test_cancel_1",
+      "object": "subscription",
+      "customer": "cus_test_cancel_1",
+      "status": "canceled",
+      "items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "si_test_cancel_1",
+            "object": "subscription_item",
+            "price": {
+              "id": "price_arty_live",
+              "object": "price",
+              "metadata": { "club": "arty" },
+              "product": { "id": "prod_arty_live", "object": "product", "metadata": {} }
+            }
+          }
+        ]
+      },
+      "metadata": {}
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "evt_test_sub_created_1",
+  "object": "event",
+  "type": "customer.subscription.created",
+  "data": {
+    "object": {
+      "id": "sub_test_backup_1",
+      "object": "subscription",
+      "customer": "cus_test_backup_1",
+      "status": "active",
+      "items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "si_test_backup_1",
+            "object": "subscription_item",
+            "price": {
+              "id": "price_cure_live",
+              "object": "price",
+              "metadata": { "club": "cure" },
+              "product": { "id": "prod_cure_live", "object": "product", "metadata": {} }
+            }
+          }
+        ]
+      },
+      "metadata": { "name": "Backup User", "email": "backup@example.com" }
+    }
+  }
+}
