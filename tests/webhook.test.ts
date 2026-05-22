@@ -209,13 +209,23 @@ describe('POST /api/stripe-webhook — checkout.session.completed', () => {
     expect(emailArgs.text).toContain('Welcome to the Arty Club, Jane.');
     expect(emailArgs.text).toContain(member!.member_number);
     expect(emailArgs.text).toContain('10% off all food and drink at the Artyst');
+    expect(emailArgs.text).toContain('Manage your membership:');
     expect(emailArgs.text).toContain('/manage');
     expect(emailArgs.text).toContain('Matthew');
+
+    expect(typeof emailArgs.html).toBe('string');
+    expect(emailArgs.html).toContain('/manage');
+    expect(emailArgs.html).not.toContain('billing.stripe.com');
+    expect(emailArgs.html).toContain('cid:member-qr');
+    expect(emailArgs.html).toContain(member!.member_number);
+
     expect(Array.isArray(emailArgs.attachments)).toBe(true);
     expect(emailArgs.attachments).toHaveLength(1);
-    expect(emailArgs.attachments[0].contentId).toBe('member-qr');
-    expect(emailArgs.attachments[0].contentType).toBe('image/png');
-    expect(Buffer.isBuffer(emailArgs.attachments[0].content)).toBe(true);
+    const att = emailArgs.attachments[0];
+    expect(att.contentId).toBe('member-qr');
+    expect(att.contentType).toBe('image/png');
+    expect(Buffer.isBuffer(att.content)).toBe(true);
+    expect(att.filename).toMatch(/\.png$/);
   });
 
   it('is idempotent — re-receiving the same event id is a no-op', async () => {

@@ -117,6 +117,7 @@ function buildWelcomeEmail(opts: {
   const bullets = [...BENEFIT_BULLETS];
   if (club === 'both') bullets.push(BOTH_EXTRA_BULLET);
 
+  const manageUrl = `${siteUrl}/manage`;
   const textBullets = bullets.map((b) => `· ${b}`).join('\n');
   const text = [
     opening,
@@ -127,8 +128,7 @@ function buildWelcomeEmail(opts: {
     '',
     'Your QR code (attached) does the same job as your member number — easier to show on your phone than to remember.',
     '',
-    'To manage your subscription, change your card details, or switch clubs, use this link any time:',
-    `${siteUrl}/manage`,
+    `Manage your membership: ${manageUrl}`,
     '',
     'Welcome in.',
     '',
@@ -140,11 +140,11 @@ function buildWelcomeEmail(opts: {
   const html = `<!doctype html>
 <html><body style="font-family: Georgia, serif; color: #1a1714; line-height: 1.55; max-width: 600px;">
 <p>${escapeHtml(opening)}</p>
-<p>You're member <strong>${escapeHtml(memberNumber)}</strong>. Here's what that means in practice:</p>
+<p>You're member <strong>${escapeHtml(memberNumber)}</strong>.</p>
+<p><img src="cid:member-qr" alt="Your member QR code" width="200" height="200" style="display: block; width: 200px; height: 200px; border: 1px solid #d8d0c8; padding: 8px; background: #ffffff;" /></p>
+<p>Your QR code (above) does the same job as your member number — easier to show on your phone than to remember. Here's what membership gets you:</p>
 <ul>${htmlBullets}</ul>
-<p>Your QR code <img src="cid:member-qr" alt="QR code for ${escapeHtml(memberNumber)}" style="vertical-align: middle; width: 24px; height: 24px;" /> (attached) does the same job as your member number — easier to show on your phone than to remember.</p>
-<p>To manage your subscription, change your card details, or switch clubs, use this link any time:<br/>
-<a href="${escapeHtml(siteUrl)}/manage">${escapeHtml(siteUrl)}/manage</a></p>
+<p>Manage your membership: <a href="${escapeHtml(manageUrl)}">${escapeHtml(manageUrl)}</a></p>
 <p>Welcome in.</p>
 <p>Matthew<br/>The Artyst · 54-56 Chesterton Road · Cambridge CB4 1EN</p>
 </body></html>`;
