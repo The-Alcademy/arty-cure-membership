@@ -79,11 +79,25 @@ const TEST_EMAILS = [
   'payfail@example.com',
 ];
 
+const TEST_EVENT_IDS = [
+  'evt_test_checkout_arty_1',
+  'evt_test_sub_created_1',
+  'evt_test_sub_updated_1',
+  'evt_test_sub_deleted_1',
+  'evt_test_payment_failed_1',
+];
+
 async function cleanup() {
   await supabase
     .from('membership_events')
     .delete()
     .in('member_email', TEST_EMAILS);
+  for (const id of TEST_EVENT_IDS) {
+    await supabase
+      .from('membership_events')
+      .delete()
+      .contains('metadata', { stripe_event_id: id });
+  }
   await supabase.from('members').delete().in('email', TEST_EMAILS);
 }
 
