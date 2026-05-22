@@ -87,11 +87,13 @@ function welcomeSubject(club: Club, firstName: string): string {
 }
 
 const BENEFIT_BULLETS = [
-  '10% off all food and drink at the Artyst — show this email or your member number at the bar.',
-  'Member pricing on every event we run — look for the "members £X" line on event pages.',
-  '5-day priority booking on capacity events.',
-  'One free guest pass per month.',
-  'The right to host your own event at the Artyst under house terms — get in touch when you have something in mind.',
+  '10% off all food and drink at the Artyst',
+  'Member pricing on every event — typically £2-5 off ticket price',
+  '5-day priority booking on capacity events before they open to the public',
+  'One free guest pass per month — bring someone at member rate',
+  'Right to host your own events at the Artyst under house terms',
+  '5% discount on all artworks exhibited at the Artyst',
+  'Invitations to member-only events, including private views',
 ];
 
 const BOTH_EXTRA_BULLET =
