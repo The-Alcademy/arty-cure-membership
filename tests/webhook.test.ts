@@ -204,8 +204,18 @@ describe('POST /api/stripe-webhook — checkout.session.completed', () => {
     const emailArgs = sendEmail.mock.calls[0][0];
     expect(emailArgs.to).toBe('jane.arty@example.com');
     expect(emailArgs.from).toBe(process.env.RESEND_FROM_EMAIL);
-    expect(emailArgs.text).toContain('Jane Arty');
+    expect(emailArgs.replyTo).toBe('matthew@othersyde.co.uk');
+    expect(emailArgs.subject).toBe('Welcome to the Arty Club, Jane');
+    expect(emailArgs.text).toContain('Welcome to the Arty Club, Jane.');
     expect(emailArgs.text).toContain(member!.member_number);
+    expect(emailArgs.text).toContain('10% off all food and drink at the Artyst');
+    expect(emailArgs.text).toContain('/manage');
+    expect(emailArgs.text).toContain('Matthew');
+    expect(Array.isArray(emailArgs.attachments)).toBe(true);
+    expect(emailArgs.attachments).toHaveLength(1);
+    expect(emailArgs.attachments[0].contentId).toBe('member-qr');
+    expect(emailArgs.attachments[0].contentType).toBe('image/png');
+    expect(Buffer.isBuffer(emailArgs.attachments[0].content)).toBe(true);
   });
 
   it('is idempotent — re-receiving the same event id is a no-op', async () => {

@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import QRCode from 'qrcode';
 
 export const config = { api: { bodyParser: false } };
 
@@ -74,6 +75,93 @@ function clubDisplayName(club: Club): string {
   return 'Arty Club & CURE Club';
 }
 
+function welcomeOpeningLine(club: Club, firstName: string): string {
+  if (club === 'arty') return `Welcome to the Arty Club, ${firstName}.`;
+  if (club === 'cure') return `Welcome to the CURE Club, ${firstName}.`;
+  return `Welcome to the Arty Club and CURE Club, ${firstName}.`;
+}
+
+function welcomeSubject(club: Club, firstName: string): string {
+  if (club === 'both') return `Welcome to the Clubs, ${firstName}`;
+  return `Welcome to the ${clubDisplayName(club)}, ${firstName}`;
+}
+
+const BENEFIT_BULLETS = [
+  '10% off all food and drink at the Artyst — show this email or your member number at the bar.',
+  'Member pricing on every event we run — look for the "members £X" line on event pages.',
+  '5-day priority booking on capacity events.',
+  'One free guest pass per month.',
+  'The right to host your own event at the Artyst under house terms — get in touch when you have something in mind.',
+];
+
+const BOTH_EXTRA_BULLET =
+  "Full access to both clubs' programmes wherever they're held in the building.";
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function buildWelcomeEmail(opts: {
+  club: Club;
+  firstName: string;
+  memberNumber: string;
+  siteUrl: string;
+}) {
+  const { club, firstName, memberNumber, siteUrl } = opts;
+  const opening = welcomeOpeningLine(club, firstName);
+  const bullets = [...BENEFIT_BULLETS];
+  if (club === 'both') bullets.push(BOTH_EXTRA_BULLET);
+
+  const textBullets = bullets.map((b) => `· ${b}`).join('\n');
+  const text = [
+    opening,
+    '',
+    `You're member ${memberNumber}. Here's what that means in practice:`,
+    '',
+    textBullets,
+    '',
+    'Your QR code (attached) does the same job as your member number — easier to show on your phone than to remember.',
+    '',
+    'To manage your subscription, change your card details, or switch clubs, use this link any time:',
+    `${siteUrl}/manage`,
+    '',
+    'Welcome in.',
+    '',
+    'Matthew',
+    'The Artyst · 54-56 Chesterton Road · Cambridge CB4 1EN',
+  ].join('\n');
+
+  const htmlBullets = bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join('');
+  const html = `<!doctype html>
+<html><body style="font-family: Georgia, serif; color: #1a1714; line-height: 1.55; max-width: 600px;">
+<p>${escapeHtml(opening)}</p>
+<p>You're member <strong>${escapeHtml(memberNumber)}</strong>. Here's what that means in practice:</p>
+<ul>${htmlBullets}</ul>
+<p>Your QR code <img src="cid:member-qr" alt="QR code for ${escapeHtml(memberNumber)}" style="vertical-align: middle; width: 24px; height: 24px;" /> (attached) does the same job as your member number — easier to show on your phone than to remember.</p>
+<p>To manage your subscription, change your card details, or switch clubs, use this link any time:<br/>
+<a href="${escapeHtml(siteUrl)}/manage">${escapeHtml(siteUrl)}/manage</a></p>
+<p>Welcome in.</p>
+<p>Matthew<br/>The Artyst · 54-56 Chesterton Road · Cambridge CB4 1EN</p>
+</body></html>`;
+
+  return { text, html };
+}
+
+async function buildQrAttachment(memberNumber: string) {
+  const buffer = await QRCode.toBuffer(memberNumber, { width: 320, margin: 1 });
+  return {
+    filename: `${memberNumber}.png`,
+    content: buffer,
+    contentType: 'image/png',
+    contentId: 'member-qr',
+  };
+}
+
 async function alreadyProcessed(eventId: string): Promise<boolean> {
   const { data } = await getSupabase()
     .from('membership_events')
@@ -140,11 +228,24 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
   await recordEvent(event.id, email, eventType, { club });
 
   try {
+    const firstName = (row.name ?? '').trim().split(/\s+/)[0] || 'there';
+    const siteUrl = process.env.SITE_URL ?? 'https://member.theartyst.co.uk';
+    const memberNumber = row.member_number as string;
+    const { text, html } = buildWelcomeEmail({
+      club,
+      firstName,
+      memberNumber,
+      siteUrl,
+    });
+    const attachment = await buildQrAttachment(memberNumber);
     await getResend().emails.send({
       from: process.env.RESEND_FROM_EMAIL!,
       to: email,
-      subject: `Welcome to the ${clubDisplayName(club)}, ${(row.name ?? '').split(' ')[0]}`,
-      text: `Welcome ${row.name}. Your member number is ${row.member_number}.`,
+      replyTo: 'matthew@othersyde.co.uk',
+      subject: welcomeSubject(club, firstName),
+      text,
+      html,
+      attachments: [attachment],
     });
   } catch (err) {
     console.error('Welcome email failed', err);

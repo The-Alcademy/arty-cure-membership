@@ -236,3 +236,58 @@ input, textarea, button {
 }
 
 .footer a { color: var(--color-faint); margin: 0 10px; }
+
+.welcome .welcome-status {
+  text-align: center;
+  padding: 96px 24px;
+  color: var(--color-muted);
+  font-size: 1.1rem;
+}
+
+.welcome .welcome-ready {
+  text-align: center;
+}
+
+.welcome .member-number {
+  font-size: 1.3rem;
+  color: var(--color-muted);
+  margin: 8px 0 28px;
+}
+
+.welcome .member-number strong {
+  color: var(--color-primary);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.welcome .qr {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 32px;
+}
+
+.welcome .qr img {
+  width: 220px;
+  height: 220px;
+  background: #fff;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+.welcome .qr-placeholder {
+  display: inline-block;
+  width: 220px;
+  height: 220px;
+  line-height: 220px;
+  color: var(--color-faint);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: 10px;
+}
+
+.welcome .redemption {
+  max-width: 580px;
+  margin: 0 auto 48px;
+  color: var(--color-muted);
+}
