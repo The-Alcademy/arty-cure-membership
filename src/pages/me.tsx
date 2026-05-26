@@ -240,6 +240,16 @@ function MePage(): React.ReactElement {
 }
 
 // ─── Mount ──────────────────────────────────────────────────────
+// Register the service worker for offline pass display.
+// Best-effort — failure to register doesn't affect the page render.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => {
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}
+ 
 const root = document.getElementById('root');
 if (root) {
   createRoot(root).render(
