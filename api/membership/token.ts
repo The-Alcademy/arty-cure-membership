@@ -106,8 +106,7 @@ let token: string;
   const site = (process.env.SITE_URL || 'https://member.theartyst.co.uk').replace(/\/$/, '');
   const magicLink = `${site}/me?token=${encodeURIComponent(token)}`;
 
-  return res.status(200).json({
-    member_id:     member.id,
+return res.status(200).json({
     member_number: member.member_number,
     name:          member.name,
     email:         member.email,
