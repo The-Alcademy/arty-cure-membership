@@ -95,9 +95,9 @@ const { data, error } = await lookup;
 
   const member = data[0];
 
-  let token: string;
+let token: string;
   try {
-    token = signToken(member.id);
+    token = signToken(member.member_number);
   } catch (e: any) {
     console.error('signToken error:', e?.message);
     return res.status(500).json({ error: 'signing_failed' });
