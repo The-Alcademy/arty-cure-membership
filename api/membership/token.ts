@@ -78,14 +78,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
-  const query = supabase
-    .from('members')
-    .select('id, member_number, name, email')
-    .limit(1);
+const lookup = isMemNumber
+  ? supabase.from('members').select('id, member_number, name, email').eq('member_number', identifier.toUpperCase()).limit(1)
+  : supabase.from('members').select('id, member_number, name, email').eq('email', identifier.toLowerCase()).limit(1);
 
-  const { data, error } = isMemNumber
-    ? await query.eq('member_number', identifier.toUpperCase())
-    : await query.eq('email', identifier.toLowerCase());
+const { data, error } = await lookup;
 
   if (error) {
     console.error('member lookup error:', error);
