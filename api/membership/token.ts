@@ -24,7 +24,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { timingSafeEqual } from 'node:crypto';
-import { signToken } from '../../src/lib/memberToken';
+import { signToken } from '../_lib/memberToken';
 
 let _client: SupabaseClient | null = null;
 function getSupabase(): SupabaseClient {
