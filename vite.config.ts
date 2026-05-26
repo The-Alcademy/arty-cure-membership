@@ -1,25 +1,23 @@
-import { defineConfig } from 'vite';
-import { resolve } from 'node:path';
-import react from '@vitejs/plugin-react';
+═══════════════════════════════════════════════════════════════════════
+  COMMIT 2 — VITE CONFIG EDIT
+  Add me.html as a fourth Vite entry point
+═══════════════════════════════════════════════════════════════════════
 
-export default defineConfig({
-  plugins: [react()],
-  build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        welcome: resolve(__dirname, 'welcome.html'),
+In github.dev, open vite.config.ts.
+
+Use Ctrl+H (Find & Replace).
+
+──────────────────────── FIND ────────────────────────
         manage: resolve(__dirname, 'manage.html'),
-      },
-    },
-  },
-  server: {
-    port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-      },
-    },
-  },
-});
+──────────────────────────────────────────────────────
+
+──────────────────────── REPLACE WITH ────────────────────────
+        manage: resolve(__dirname, 'manage.html'),
+        me:     resolve(__dirname, 'me.html'),
+──────────────────────────────────────────────────────
+
+Click Replace (singular). Save.
+
+Verify with Ctrl+F:
+- me:     resolve  → should be 1 match
+- manage: resolve  → should still be 1 match
