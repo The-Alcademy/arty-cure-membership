@@ -79,8 +79,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
 const lookup = isMemNumber
-  ? supabase.from('members').select('id, member_number, name, email').eq('member_number', identifier.toUpperCase()).limit(1)
-  : supabase.from('members').select('id, member_number, name, email').eq('email', identifier.toLowerCase()).limit(1);
+  ? supabase.from('members').select('member_number, name, email').eq('member_number', identifier.toUpperCase()).limit(1)
+  : supabase.from('members').select('member_number, name, email').eq('email', identifier.toLowerCase()).limit(1);
 
 const { data, error } = await lookup;
 
