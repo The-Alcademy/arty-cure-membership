@@ -7,10 +7,11 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main:    resolve(__dirname, 'index.html'),
-        welcome: resolve(__dirname, 'welcome.html'),
-        manage:  resolve(__dirname, 'manage.html'),
-        me:      resolve(__dirname, 'me.html'),
+        main:               resolve(__dirname, 'index.html'),
+        welcome:            resolve(__dirname, 'welcome.html'),
+        manage:             resolve(__dirname, 'manage.html'),
+        me:                 resolve(__dirname, 'me.html'),
+        adminGrantFounder:  resolve(__dirname, 'admin/grant-founder.html'),
       },
     },
   },

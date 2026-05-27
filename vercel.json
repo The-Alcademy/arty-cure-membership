@@ -3,6 +3,7 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/welcome", "destination": "/welcome.html" },
-    { "source": "/manage", "destination": "/manage.html" }
+    { "source": "/manage", "destination": "/manage.html" },
+    { "source": "/admin/grant-founder", "destination": "/admin/grant-founder.html" }
   ]
 }
