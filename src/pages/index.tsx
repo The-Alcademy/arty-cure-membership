@@ -1,27 +1,33 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import clubsData from '../content/clubs.json';
 import benefitsData from '../content/benefits.json';
 
-type Product = 'arty' | 'cure' | 'both';
+// v2 — Arty is the only self-serve subscription. CURE is by application:
+// the card surfaces a mailto CTA until the dedicated /apply page ships
+// (Goal 11 in spec/MEMBERSHIP.md §12).
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const ORDER: Product[] = ['arty', 'cure', 'both'];
 
 function formatPrice(pence: number): string {
   return `£${(pence / 100).toFixed(0)}/month`;
 }
 
-function buttonLabelFor(selected: Product | null): string {
-  if (!selected) return 'Choose a club to continue';
-  const price = formatPrice(clubsData[selected].price_pence);
-  if (selected === 'arty') return `Join the Arty Club · ${price} →`;
-  if (selected === 'cure') return `Join the CURE Club · ${price} →`;
-  return `Join Both Clubs · ${price} →`;
+// Build the mailto: URL for CURE applications. Subject and body are
+// URL-encoded so apostrophes, commas, and line breaks round-trip cleanly
+// across mail clients.
+function cureMailtoHref(email: string): string {
+  const subject = encodeURIComponent('CURE Club application');
+  const body = encodeURIComponent(
+    "Hi Matthew, I'd like to apply to join the CURE Club.\n\n[Tell me a bit about yourself]",
+  );
+  return `mailto:${email}?subject=${subject}&body=${body}`;
 }
 
 export default function SignupPage() {
-  const [selected, setSelected] = useState<Product | null>(null);
+  // Only Arty is selectable in v2 — the CURE card is a mailto link, not a
+  // radio option. We keep a single-selection bool so the existing
+  // "form revealed after a card is picked" pattern still applies.
+  const [artySelected, setArtySelected] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [signupMessage, setSignupMessage] = useState('');
@@ -29,13 +35,13 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const buttonLabel = useMemo(() => buttonLabelFor(selected), [selected]);
+  const artyButtonLabel = `Join the Arty Club · ${formatPrice(clubsData.arty.price_pence)} →`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (!selected) {
+    if (!artySelected) {
       setError('Please choose a club above.');
       return;
     }
@@ -54,7 +60,7 @@ export default function SignupPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          product: selected,
+          product: 'arty',
           name: name.trim(),
           email: email.trim(),
           signup_message: signupMessage.trim(),
@@ -101,35 +107,41 @@ export default function SignupPage() {
       </section>
 
       <form className="signup" onSubmit={handleSubmit} noValidate>
-        <fieldset className="cards" role="radiogroup" aria-label="Choose a membership">
+        <fieldset className="cards" aria-label="Choose a membership">
           <legend className="sr-only">Membership</legend>
-          {ORDER.map((key) => {
-            const club = clubsData[key];
-            const isSelected = selected === key;
-            return (
-              <label
-                key={key}
-                className={`card ${isSelected ? 'selected' : ''}`}
-                data-testid={`card-${key}`}
-              >
-                <input
-                  type="radio"
-                  name="product"
-                  value={key}
-                  checked={isSelected}
-                  onChange={() => setSelected(key)}
-                />
-                <span className="name">{club.name}</span>
-                <span className="price">{formatPrice(club.price_pence)}</span>
-                {key === 'both' && (
-                  <span className="savings">Saves £2/month vs joining separately</span>
-                )}
-              </label>
-            );
-          })}
+
+          {/* Arty — self-serve radio card */}
+          <label
+            className={`card ${artySelected ? 'selected' : ''}`}
+            data-testid="card-arty"
+          >
+            <input
+              type="radio"
+              name="product"
+              value="arty"
+              checked={artySelected}
+              onChange={() => setArtySelected(true)}
+            />
+            <span className="name">{clubsData.arty.name}</span>
+            <span className="price">{formatPrice(clubsData.arty.price_pence)}</span>
+          </label>
+
+          {/* CURE — mailto CTA card (no radio; opens email client) */}
+          <div className="card card-cure" data-testid="card-cure">
+            <span className="name">{clubsData.cure.name}</span>
+            <span className="price">{formatPrice(clubsData.cure.price_pence)}</span>
+            <span className="cure-subtext">{clubsData.cure.apply_subtext}</span>
+            <a
+              className="cure-apply"
+              href={cureMailtoHref(clubsData.cure.apply_email)}
+              data-testid="cure-apply-link"
+            >
+              Apply →
+            </a>
+          </div>
         </fieldset>
 
-        {selected && (
+        {artySelected && (
           <div className="form">
             <div className="row">
               <label htmlFor="name">Name</label>
@@ -192,9 +204,10 @@ export default function SignupPage() {
         <button
           type="submit"
           className="submit"
-          disabled={!selected || submitting}
+          disabled={!artySelected || submitting}
+          data-testid="arty-submit"
         >
-          {submitting ? 'Starting checkout…' : buttonLabel}
+          {submitting ? 'Starting checkout…' : artyButtonLabel}
         </button>
 
         {error && (

@@ -4,20 +4,17 @@
     "tagline": "Arts",
     "price_pence": 500,
     "stripe_env_var": "STRIPE_PRICE_ARTY",
+    "cta_type": "subscribe",
     "description": "The Arts side of the Artyst. Programming rooted in PsychoNautics — performance, exhibitions, conversation about the work that matters. Drawing on the venue's Syd Barrett heritage and the city's wider artistic tradition. Members shape the programme by attending, by suggesting, and by hosting their own events under house terms."
   },
   "cure": {
     "name": "CURE Club",
-    "tagline": "Wellbeing",
-    "price_pence": 500,
+    "tagline": "Wellbeing · by application",
+    "price_pence": 5000,
     "stripe_env_var": "STRIPE_PRICE_CURE",
-    "description": "The Cambridge Underground Research Exploratorium. The Wellbeing side, rooted in PsychoTherapeutics with secondary links to PsychoAlchemy and PsychoNautics. A lineage that runs from 60s counter-culture through Syd Barrett to Newton's alchemical interests — taking the word 'cure' seriously. The basement is its natural home when the basement is finished; until then, anywhere in the building."
-  },
-  "both": {
-    "name": "Both Clubs",
-    "tagline": "Arts and Wellbeing",
-    "price_pence": 800,
-    "stripe_env_var": "STRIPE_PRICE_BOTH",
-    "description": "Full access to the programmes of both clubs. Saves £2/month versus joining each separately. The natural choice for anyone who shares the founding conviction that arts and wellbeing are inseparable."
+    "cta_type": "apply",
+    "apply_email": "matthew@othersyde.co.uk",
+    "apply_subtext": "By application — chat with Matthew first",
+    "description": "The Cambridge Underground Research Exploratorium. The inner-circle membership — Wellbeing rooted in PsychoTherapeutics with secondary links to PsychoAlchemy and PsychoNautics. A lineage that runs from 60s counter-culture through Syd Barrett to Newton's alchemical interests — taking the word 'cure' seriously. By application followed by an in-person conversation with Matthew. CURE includes everything the Arty Club provides."
   }
 }
