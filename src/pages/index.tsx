@@ -2,8 +2,9 @@ import { useState } from 'react';
 import clubsData from '../content/clubs.json';
 import benefitsData from '../content/benefits.json';
 
-// v2 — Arty is the only self-serve subscription. CURE is by application:
-// the card's CTA links to the dedicated /apply page (Goal 11).
+// Homepage v3 — Arty Club is the primary, self-serve subscription and the only
+// payable thing on this page. CURE is by application: a teaser strip sits below
+// the Arty signup and links to /apply, where the substantive CURE story lives.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -12,10 +13,6 @@ function formatPrice(pence: number): string {
 }
 
 export default function SignupPage() {
-  // Only Arty is selectable in v2 — the CURE card is an /apply link, not a
-  // radio option. We keep a single-selection bool so the existing
-  // "form revealed after a card is picked" pattern still applies.
-  const [artySelected, setArtySelected] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [signupMessage, setSignupMessage] = useState('');
@@ -29,10 +26,6 @@ export default function SignupPage() {
     e.preventDefault();
     setError(null);
 
-    if (!artySelected) {
-      setError('Please choose a club above.');
-      return;
-    }
     if (!name.trim()) {
       setError('Name is required.');
       return;
@@ -81,55 +74,13 @@ export default function SignupPage() {
         <p>Two clubs at the Artyst. One conviction: arts and wellbeing are inseparable.</p>
       </header>
 
-      <section className="club-paragraphs">
-        <article>
-          <h2>{clubsData.arty.name}</h2>
-          <span className="tagline">{clubsData.arty.tagline}</span>
-          <p>{clubsData.arty.description}</p>
-        </article>
-        <article>
-          <h2>{clubsData.cure.name}</h2>
-          <span className="tagline">{clubsData.cure.tagline}</span>
-          <p>{clubsData.cure.description}</p>
-        </article>
-      </section>
+      {/* ── Arty Club — the primary, payable membership ───────────────── */}
+      <section className="arty-section" data-testid="arty-section">
+        <h2>{clubsData.arty.name}</h2>
+        <span className="tagline">{clubsData.arty.tagline}</span>
+        <p className="arty-intro">{clubsData.arty.description}</p>
 
-      <form className="signup" onSubmit={handleSubmit} noValidate>
-        <fieldset className="cards" aria-label="Choose a membership">
-          <legend className="sr-only">Membership</legend>
-
-          {/* Arty — self-serve radio card */}
-          <label
-            className={`card ${artySelected ? 'selected' : ''}`}
-            data-testid="card-arty"
-          >
-            <input
-              type="radio"
-              name="product"
-              value="arty"
-              checked={artySelected}
-              onChange={() => setArtySelected(true)}
-            />
-            <span className="name">{clubsData.arty.name}</span>
-            <span className="price">{formatPrice(clubsData.arty.price_pence)}</span>
-          </label>
-
-          {/* CURE — mailto CTA card (no radio; opens email client) */}
-          <div className="card card-cure" data-testid="card-cure">
-            <span className="name">{clubsData.cure.name}</span>
-            <span className="price">{formatPrice(clubsData.cure.price_pence)}</span>
-            <span className="cure-subtext">{clubsData.cure.apply_subtext}</span>
-            <a
-              className="cure-apply"
-              href={clubsData.cure.apply_url}
-              data-testid="cure-apply-link"
-            >
-              Apply →
-            </a>
-          </div>
-        </fieldset>
-
-        {artySelected && (
+        <form className="signup" onSubmit={handleSubmit} noValidate>
           <div className="form">
             <div className="row">
               <label htmlFor="name">Name</label>
@@ -178,32 +129,46 @@ export default function SignupPage() {
               </label>
             </div>
           </div>
-        )}
 
-        <section className="benefits">
-          <h3>What membership gets you</h3>
-          <ul>
-            {benefitsData.benefits.map((b) => (
-              <li key={b}>{b}</li>
-            ))}
-          </ul>
-        </section>
+          <section className="benefits">
+            <h3>What membership gets you</h3>
+            <ul>
+              {benefitsData.benefits.map((b) => (
+                <li key={b}>{b}</li>
+              ))}
+            </ul>
+          </section>
 
-        <button
-          type="submit"
-          className="submit"
-          disabled={!artySelected || submitting}
-          data-testid="arty-submit"
+          <button
+            type="submit"
+            className="submit"
+            disabled={submitting}
+            data-testid="arty-submit"
+          >
+            {submitting ? 'Starting checkout…' : artyButtonLabel}
+          </button>
+
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
+        </form>
+      </section>
+
+      {/* ── CURE Club — teaser strip, discovered by scroll ────────────── */}
+      <aside className="cure-teaser" data-testid="cure-teaser">
+        <h2>{clubsData.cure.name}</h2>
+        <span className="tagline">{clubsData.cure.tagline}</span>
+        <p>{clubsData.cure.teaser}</p>
+        <a
+          className="cure-teaser-link"
+          href={clubsData.cure.apply_url}
+          data-testid="cure-apply-link"
         >
-          {submitting ? 'Starting checkout…' : artyButtonLabel}
-        </button>
-
-        {error && (
-          <p className="error" role="alert">
-            {error}
-          </p>
-        )}
-      </form>
+          Apply →
+        </a>
+      </aside>
 
       <footer className="footer">
         <p>

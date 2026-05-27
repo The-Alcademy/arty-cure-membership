@@ -48,36 +48,78 @@ input, textarea, button {
   max-width: 620px;
 }
 
-.club-paragraphs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin-bottom: 56px;
+/* ─── Homepage v3 — Arty primary, CURE teaser below ───────────────── */
+
+/* Arty takes the page weight: full font scale, the whole signup flow. */
+.arty-section {
+  margin-bottom: 8px;
 }
 
-.club-paragraphs article h2 {
+.arty-section h2 {
   font-family: var(--font-display);
-  font-size: 1.4rem;
-  margin: 0 0 6px;
+  font-size: clamp(1.7rem, 3.5vw, 2.2rem);
+  margin: 0 0 4px;
   color: var(--color-primary);
 }
 
-.club-paragraphs article .tagline {
+.tagline {
   display: block;
   color: var(--color-faint);
   font-size: 0.9rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.arty-intro {
+  margin: 0 0 28px;
+  color: var(--color-muted);
+  font-size: 1.08rem;
+}
+
+/* CURE is the smaller, slower door: narrower, quieter, found by scrolling. */
+.cure-teaser {
+  max-width: 540px;
+  margin: 64px auto 0;
+  padding-top: 36px;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.cure-teaser h2 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin: 0 0 4px;
+  color: var(--color-primary);
+}
+
+.cure-teaser .tagline {
+  font-size: 0.78rem;
   margin-bottom: 14px;
 }
 
-.club-paragraphs article p {
-  margin: 0;
+.cure-teaser p {
+  margin: 0 0 22px;
   color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
-@media (max-width: 720px) {
-  .club-paragraphs { grid-template-columns: 1fr; }
+/* Brand-red call to action, deliberately smaller than the Arty submit. */
+.cure-teaser-link {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+  transition: opacity 120ms ease;
+}
+
+.cure-teaser-link:hover {
+  opacity: 0.88;
 }
 
 .cards {

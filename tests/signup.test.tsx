@@ -36,50 +36,48 @@ afterEach(() => {
 });
 
 describe('SignupPage', () => {
-  it('renders two pricing cards with correct prices and no Both card', () => {
+  it('renders the Arty section as the primary, payable membership', () => {
     render(<SignupPage />);
 
-    const arty = screen.getByTestId('card-arty');
-    const cure = screen.getByTestId('card-cure');
-
+    const arty = screen.getByTestId('arty-section');
     expect(within(arty).getByText('The Arty Club')).toBeInTheDocument();
-    expect(within(arty).getByText('£5/month')).toBeInTheDocument();
+    // The signup form fields live inside the Arty section and are always shown.
+    expect(within(arty).getByLabelText('Name')).toBeInTheDocument();
+    expect(within(arty).getByLabelText('Email')).toBeInTheDocument();
+    expect(within(arty).getByText('What membership gets you')).toBeInTheDocument();
 
-    expect(within(cure).getByText('CURE Club')).toBeInTheDocument();
-    expect(within(cure).getByText('£50/month')).toBeInTheDocument();
-    expect(within(cure).getByText(/By application/i)).toBeInTheDocument();
+    // The submit is the page's primary CTA, enabled by default (no card gate).
+    const button = within(arty).getByTestId('arty-submit');
+    expect(button).toHaveTextContent('Join the Arty Club · £5/month →');
+    expect(button).toBeEnabled();
 
-    // The v1 "Both" card must not appear in v2.
+    // No radio-card / selectable layout any more — Arty is the only payable thing.
+    expect(screen.queryByTestId('card-arty')).toBeNull();
+    expect(screen.queryByTestId('card-cure')).toBeNull();
     expect(screen.queryByTestId('card-both')).toBeNull();
+    expect(screen.queryByRole('radio')).toBeNull();
     expect(screen.queryByText(/Both Clubs/i)).toBeNull();
   });
 
-  it('shows the Arty button label and does not vary by selection', async () => {
-    const user = userEvent.setup();
+  it('renders the CURE teaser strip below the Arty section', () => {
     render(<SignupPage />);
 
-    // The button label is fixed: "Join the Arty Club · £5/month →".
-    // The button is disabled until Arty is selected, but the label itself
-    // doesn't depend on the selection any more.
-    const button = screen.getByTestId('arty-submit');
-    expect(button).toHaveTextContent('Join the Arty Club · £5/month →');
-    expect(button).toBeDisabled();
+    const teaser = screen.getByTestId('cure-teaser');
+    expect(within(teaser).getByText('CURE Club')).toBeInTheDocument();
+    expect(within(teaser).getByText(/smaller, slower door/i)).toBeInTheDocument();
+    expect(within(teaser).getByText(/£50\/month, by application/i)).toBeInTheDocument();
 
-    await user.click(within(screen.getByTestId('card-arty')).getByRole('radio'));
-    expect(screen.getByTestId('arty-submit')).toHaveTextContent(
-      'Join the Arty Club · £5/month →',
-    );
-    expect(screen.getByTestId('arty-submit')).toBeEnabled();
+    // The teaser sits after the Arty section in document order (discovered by scroll).
+    const arty = screen.getByTestId('arty-section');
+    expect(arty.compareDocumentPosition(teaser) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it("CURE card's Apply CTA links internally to /apply", () => {
+  it("the CURE teaser's Apply CTA is an anchor that links to /apply", () => {
     render(<SignupPage />);
 
     const applyLink = screen.getByTestId('cure-apply-link') as HTMLAnchorElement;
     expect(applyLink.tagName).toBe('A');
     expect(applyLink.textContent).toMatch(/Apply/);
-
-    // v2 (Goal 11): the CTA now points at the in-app /apply page, not a mailto.
     expect(applyLink.getAttribute('href')).toBe('/apply');
   });
 
@@ -87,8 +85,7 @@ describe('SignupPage', () => {
     const user = userEvent.setup();
     render(<SignupPage />);
 
-    // jsdom won't follow mailto: navigation but we still want to confirm no
-    // checkout call fires.
+    // The teaser link is plain navigation to /apply, never a Stripe trigger.
     const applyLink = screen.getByTestId('cure-apply-link');
     await user.click(applyLink);
 
@@ -99,7 +96,6 @@ describe('SignupPage', () => {
     const user = userEvent.setup();
     render(<SignupPage />);
 
-    await user.click(within(screen.getByTestId('card-arty')).getByRole('radio'));
     await user.type(screen.getByLabelText('Name'), 'Jane Doe');
     await user.type(screen.getByLabelText('Email'), 'jane@example.com');
     await user.type(
@@ -129,11 +125,10 @@ describe('SignupPage', () => {
     });
   });
 
-  it('shows a validation error and does not POST when Arty is submitted with missing fields', async () => {
+  it('shows a validation error and does not POST when submitted with missing fields', async () => {
     const user = userEvent.setup();
     render(<SignupPage />);
 
-    await user.click(within(screen.getByTestId('card-arty')).getByRole('radio'));
     await user.click(screen.getByTestId('arty-submit'));
 
     expect(await screen.findByRole('alert')).toHaveTextContent(/Name is required/);
