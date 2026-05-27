@@ -6,7 +6,9 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PRICE_ENV_BY_PRODUCT = {
   arty: 'STRIPE_PRICE_ARTY',
   cure: 'STRIPE_PRICE_CURE',
-  both: 'STRIPE_PRICE_BOTH',
+  // 'both' retired in v2 — the Both Clubs SKU no longer accepts new checkouts,
+  // so product: 'both' now falls through to a 400 invalid_product. Historical
+  // Both subscriptions are still handled by api/stripe-webhook.ts.
 } as const;
 
 type Product = keyof typeof PRICE_ENV_BY_PRODUCT;

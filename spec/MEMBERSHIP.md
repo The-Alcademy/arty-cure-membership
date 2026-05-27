@@ -78,7 +78,7 @@ RESEND_FROM_EMAIL=members@theartyst.co.uk
 
 # Admin auth — guards /api/admin/* and the /admin/* pages.
 # Long random hex (>= 32 chars). Sent as `Authorization: Bearer <token>`.
-ADMIN_API_TOKEN=
+ADMIN_TOKEN=
 
 # Member magic-link tokens — HMAC secret for /me + /manage?token= + cancel + upgrade.
 MEMBER_TOKEN_SECRET=              # >= 32 chars random hex.
@@ -475,7 +475,7 @@ Created manually in the Stripe dashboard before any /goal runs.
 
 **Grandfathering decision.** The old £5 CURE product/price and the Both Clubs product were intentionally **not** archived, because two real subscriptions still run on legacy prices: MEM-0001 on the old £5 CURE price and MEM-0002 on Arty £5. MEM-0001's £5 CURE subscription is left running pending a future founder-related cancellation. These subscribers stay on their existing prices until they cancel / their next renewal; no billing migration happens in this build. Test subscriptions created during the cutover were cancelled.
 
-`STRIPE_PRICE_BOTH` is left defined in `.env.example` for backward compat. ⚠️ **Audit note (Goal 9 mop-up):** contrary to the original plan, this env var is **still read** by `api/checkout/create.ts`, which maps `product: 'both'` → `STRIPE_PRICE_BOTH` and would create a Both checkout session if the endpoint were called with that product. The Both card was removed from the homepage in Goal 10, so the path is unreachable from the UI but is not dead at the API level. It was flagged and left in place during the Goal 9 mop-up rather than changed. (The Stripe webhook's `club === 'both'` handling is separate intentional legacy support for any pre-v2 Both subscriptions and must be kept.)
+`STRIPE_PRICE_BOTH` is left defined in `.env.example` for backward compat but is no longer read by any code path. The Goal 9 mop-up removed the obsolete `product: 'both'` → `STRIPE_PRICE_BOTH` mapping from `api/checkout/create.ts`, so the checkout endpoint now rejects `product: 'both'` with `400 invalid_product` (the Both card had already been removed from the homepage in Goal 10). The Stripe webhook's `club === 'both'` handling is deliberately kept — it is legacy support for any pre-v2 Both subscriptions, not new-signup code.
 
 The `metadata.club` field is set on the **product**. When the webhook handler receives an event, it reads `subscription.items.data[0].price.metadata.club` to determine which booleans to flip.
 

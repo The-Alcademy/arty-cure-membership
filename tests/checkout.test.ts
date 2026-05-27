@@ -35,7 +35,6 @@ function snapshotEnv() {
     'STRIPE_SECRET_KEY',
     'STRIPE_PRICE_ARTY',
     'STRIPE_PRICE_CURE',
-    'STRIPE_PRICE_BOTH',
     'SITE_URL',
   ]) {
     ENV_BACKUP[key] = process.env[key];
@@ -62,7 +61,6 @@ beforeEach(() => {
   process.env.STRIPE_SECRET_KEY = 'sk_test_dummy';
   process.env.STRIPE_PRICE_ARTY = 'price_arty_test';
   process.env.STRIPE_PRICE_CURE = 'price_cure_test';
-  process.env.STRIPE_PRICE_BOTH = 'price_both_test';
   process.env.SITE_URL = 'https://example.test';
 
   createSession.mockReset();
@@ -124,19 +122,13 @@ describe('POST /api/checkout/create', () => {
     });
   });
 
-  it('creates a Both session with the Both price id and metadata', async () => {
+  it('rejects the retired Both product with 400 invalid_product', async () => {
     const res = makeRes();
     await handler(makeReq({ ...baseBody, product: 'both' }), res as any);
 
-    expect(res.statusCode).toBe(200);
-    const args = createSession.mock.calls[0][0];
-    expect(args.line_items).toEqual([{ price: 'price_both_test', quantity: 1 }]);
-    expect(args.metadata.club).toBe('both');
-    expect(args.subscription_data.metadata).toEqual({
-      club: 'both',
-      name: 'Jane Doe',
-      email: 'jane@example.com',
-    });
+    expect(res.statusCode).toBe(400);
+    expect((res.body as any).error).toBe('invalid_product');
+    expect(createSession).not.toHaveBeenCalled();
   });
 
   it('returns 400 when email is missing', async () => {
