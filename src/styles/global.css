@@ -291,3 +291,155 @@ input, textarea, button {
   margin: 0 auto 48px;
   color: var(--color-muted);
 }
+
+/* ─── Manage page — member-context view (token branch) ────────────── */
+
+.manage-loading {
+  text-align: center;
+  color: var(--color-muted);
+  font-style: italic;
+  margin: 32px auto;
+}
+
+.manage-card {
+  max-width: 480px;
+  margin: 0 auto 32px;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 28px 28px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.manage-name {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  margin: 0 0 4px;
+  color: var(--color-ink, #1A1614);
+}
+
+.manage-number {
+  font-family: ui-monospace, Consolas, "Courier New", monospace;
+  font-size: 14px;
+  color: var(--color-muted);
+  letter-spacing: 0.04em;
+  margin-bottom: 16px;
+}
+
+.manage-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.manage-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.manage-joined {
+  font-size: 14px;
+  color: var(--color-muted);
+  margin: 0 0 24px;
+  font-style: italic;
+}
+
+.manage-cancel-confirm {
+  font-size: 14px;
+  background: #FFF7EC;
+  border: 1px solid #E8C896;
+  color: #5A3E12;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 0 0 16px;
+}
+
+.manage-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.submit.secondary {
+  background: transparent;
+  color: var(--color-accent, #9A3A26);
+  border: 1px solid var(--color-accent, #9A3A26);
+}
+
+.submit.secondary:hover:not(:disabled) {
+  background: rgba(154, 58, 38, 0.06);
+}
+
+.submit.danger {
+  background: #9A3A26;
+  color: #ffffff;
+}
+
+.manage-cancel-link {
+  background: transparent;
+  border: none;
+  color: var(--color-muted);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 8px 0 0;
+  align-self: center;
+}
+
+.manage-cancel-link:hover {
+  color: var(--color-ink, #1A1614);
+}
+
+/* Cancel-confirm modal */
+.manage-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 20, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+
+.manage-modal {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 24px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.manage-modal h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  margin: 0 0 12px;
+  font-size: 20px;
+  color: var(--color-ink, #1A1614);
+}
+
+.manage-modal p {
+  color: var(--color-muted);
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+
+.manage-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.manage-modal-actions .submit {
+  flex: 1;
+  min-width: 140px;
+}

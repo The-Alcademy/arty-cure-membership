@@ -11,6 +11,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { deriveTier, isActive } from './../lib/deriveTier';
 
 type MemberData = {
   member_number: string;
@@ -24,25 +25,7 @@ type MemberData = {
 type LoadState =
   | { kind: 'loading' }
   | { kind: 'error'; message: string }
-  | { kind: 'ready'; member: MemberData };
-
-// ─── Tier derivation ────────────────────────────────────────────
-function deriveTier(m: MemberData): { label: string; bg: string; fg: string } {
-  if (m.arty_active && m.cure_active) {
-    return { label: 'BOTH CLUBS', bg: '#C9A227', fg: '#1A1614' };
-  }
-  if (m.cure_active) {
-    return { label: 'CURE CLUB', bg: '#5A1A0E', fg: '#FFFFFF' };
-  }
-  if (m.arty_active) {
-    return { label: 'ARTY CLUB', bg: '#9A3A26', fg: '#FFFFFF' };
-  }
-  return { label: 'CANCELLED', bg: '#888888', fg: '#FFFFFF' };
-}
-
-function isActive(m: MemberData): boolean {
-  return m.arty_active || m.cure_active;
-}
+  | { kind: 'ready'; member: MemberData; token: string };
 
 // ─── Styles ─────────────────────────────────────────────────────
 const styles: Record<string, React.CSSProperties> = {
@@ -181,7 +164,7 @@ function MePage(): React.ReactElement {
           }
           return;
         }
-        setState({ kind: 'ready', member: body as MemberData });
+        setState({ kind: 'ready', member: body as MemberData, token });
       })
       .catch(() => {
         setState({ kind: 'error', message: 'Could not reach the server. Check your connection and try again.' });
@@ -229,7 +212,12 @@ function MePage(): React.ReactElement {
               <div style={styles.caption}>Show at the bar for member benefits</div>
 
               <div style={styles.footer}>
-                <a href="/manage" style={styles.manageLink}>Manage subscription</a>
+                <a
+                  href={`/manage?token=${encodeURIComponent(state.token)}`}
+                  style={styles.manageLink}
+                >
+                  Manage subscription
+                </a>
               </div>
             </>
           );
