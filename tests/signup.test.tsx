@@ -72,23 +72,15 @@ describe('SignupPage', () => {
     expect(screen.getByTestId('arty-submit')).toBeEnabled();
   });
 
-  it("CURE card's Apply CTA is a mailto link with the right subject and recipient", () => {
+  it("CURE card's Apply CTA links internally to /apply", () => {
     render(<SignupPage />);
 
     const applyLink = screen.getByTestId('cure-apply-link') as HTMLAnchorElement;
     expect(applyLink.tagName).toBe('A');
     expect(applyLink.textContent).toMatch(/Apply/);
 
-    const href = applyLink.getAttribute('href') ?? '';
-    expect(href.startsWith('mailto:matthew@othersyde.co.uk')).toBe(true);
-
-    // Subject + body should round-trip via URL decoding.
-    const url = new URL(href);
-    expect(url.searchParams.get('subject')).toBe('CURE Club application');
-    const body = url.searchParams.get('body') ?? '';
-    expect(body).toMatch(/Hi Matthew/);
-    expect(body).toMatch(/CURE Club/);
-    expect(body).toMatch(/\[Tell me a bit about yourself\]/);
+    // v2 (Goal 11): the CTA now points at the in-app /apply page, not a mailto.
+    expect(applyLink.getAttribute('href')).toBe('/apply');
   });
 
   it('clicking the CURE Apply link does NOT POST to /api/checkout/create', async () => {

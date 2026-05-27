@@ -1,0 +1,37 @@
+[
+  {
+    "id": "q1",
+    "label": "What draws you to the CURE Club specifically?",
+    "helper_text": "A sentence or a paragraph — whatever's honest is enough.",
+    "max_chars": 1500,
+    "required": true
+  },
+  {
+    "id": "q2",
+    "label": "What do you make, do, study, or wrestle with that you'd want to bring into the room?",
+    "helper_text": "It doesn't have to be polished or professional — half-formed is welcome.",
+    "max_chars": 1500,
+    "required": true
+  },
+  {
+    "id": "q3",
+    "label": "What's a difficult question you've been holding lately?",
+    "helper_text": "It can be personal, abstract, or unanswerable — no need to resolve it here.",
+    "max_chars": 1500,
+    "required": true
+  },
+  {
+    "id": "q4",
+    "label": "Is there someone, living or not, whose work you'd want others in the room to know about?",
+    "helper_text": "A name and a line about why is plenty.",
+    "max_chars": 1500,
+    "required": true
+  },
+  {
+    "id": "q5",
+    "label": "Anything else you'd like Matthew to know before the conversation?",
+    "helper_text": "Optional — leave it blank if nothing comes to mind.",
+    "max_chars": 1500,
+    "required": false
+  }
+]

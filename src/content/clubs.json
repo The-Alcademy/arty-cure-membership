@@ -13,7 +13,7 @@
     "price_pence": 5000,
     "stripe_env_var": "STRIPE_PRICE_CURE",
     "cta_type": "apply",
-    "apply_email": "matthew@othersyde.co.uk",
+    "apply_url": "/apply",
     "apply_subtext": "By application — chat with Matthew first",
     "description": "The Cambridge Underground Research Exploratorium. The inner-circle membership — Wellbeing rooted in PsychoTherapeutics with secondary links to PsychoAlchemy and PsychoNautics. A lineage that runs from 60s counter-culture through Syd Barrett to Newton's alchemical interests — taking the word 'cure' seriously. By application followed by an in-person conversation with Matthew. CURE includes everything the Arty Club provides."
   }

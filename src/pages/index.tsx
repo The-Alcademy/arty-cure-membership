@@ -3,8 +3,7 @@ import clubsData from '../content/clubs.json';
 import benefitsData from '../content/benefits.json';
 
 // v2 — Arty is the only self-serve subscription. CURE is by application:
-// the card surfaces a mailto CTA until the dedicated /apply page ships
-// (Goal 11 in spec/MEMBERSHIP.md §12).
+// the card's CTA links to the dedicated /apply page (Goal 11).
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -12,19 +11,8 @@ function formatPrice(pence: number): string {
   return `£${(pence / 100).toFixed(0)}/month`;
 }
 
-// Build the mailto: URL for CURE applications. Subject and body are
-// URL-encoded so apostrophes, commas, and line breaks round-trip cleanly
-// across mail clients.
-function cureMailtoHref(email: string): string {
-  const subject = encodeURIComponent('CURE Club application');
-  const body = encodeURIComponent(
-    "Hi Matthew, I'd like to apply to join the CURE Club.\n\n[Tell me a bit about yourself]",
-  );
-  return `mailto:${email}?subject=${subject}&body=${body}`;
-}
-
 export default function SignupPage() {
-  // Only Arty is selectable in v2 — the CURE card is a mailto link, not a
+  // Only Arty is selectable in v2 — the CURE card is an /apply link, not a
   // radio option. We keep a single-selection bool so the existing
   // "form revealed after a card is picked" pattern still applies.
   const [artySelected, setArtySelected] = useState(false);
@@ -133,7 +121,7 @@ export default function SignupPage() {
             <span className="cure-subtext">{clubsData.cure.apply_subtext}</span>
             <a
               className="cure-apply"
-              href={cureMailtoHref(clubsData.cure.apply_email)}
+              href={clubsData.cure.apply_url}
               data-testid="cure-apply-link"
             >
               Apply →

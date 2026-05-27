@@ -11,6 +11,7 @@ export default defineConfig({
         welcome:            resolve(__dirname, 'welcome.html'),
         manage:             resolve(__dirname, 'manage.html'),
         me:                 resolve(__dirname, 'me.html'),
+        apply:              resolve(__dirname, 'apply.html'),
         adminGrantFounder:  resolve(__dirname, 'admin/grant-founder.html'),
       },
     },
