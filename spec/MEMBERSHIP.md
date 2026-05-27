@@ -1064,6 +1064,7 @@ Short, plain, respectful. Avoids over-explaining. The actual rejection wording i
     "stripe_env_var": "STRIPE_PRICE_CURE",
     "cta": "Apply",
     "join_via": "application",
+    "teaser": "There's also a smaller, slower door. The CURE Club is the inner circle — £50/month, by application. A small cohort helping shape the venue and the longer project underneath it. Includes everything Arty Club offers, plus monthly CURE gatherings, Invysible College and BedeGame development sessions, and first refusal on flagship events.",
     "description": "The Cambridge Underground Research Exploratorium. The inner-circle membership — Wellbeing rooted in PsychoTherapeutics with secondary links to PsychoAlchemy and PsychoNautics. A lineage that runs from 60s counter-culture through Syd Barrett to Newton's alchemical interests — taking the word 'cure' seriously. By application followed by an in-person conversation with Matthew. CURE includes everything the Arty Club provides."
   }
 }
