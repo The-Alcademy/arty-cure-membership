@@ -225,6 +225,19 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
     .single();
   if (error || !row) throw error ?? new Error('upsert_failed');
 
+  // CURE acceptance link-up: an accepted application's checkout carries the
+  // application id in metadata (set by api/admin/applications/decide.ts).
+  // Stamp the CURE tier and the FK back to the application. Plain Arty
+  // checkouts carry no such metadata, so this is a no-op for them.
+  const cureApplicationId = sessionMeta.cure_application_id;
+  if (cureApplicationId) {
+    const { error: linkErr } = await supabase
+      .from('members')
+      .update({ tier: 'cure', cure_application_id: cureApplicationId })
+      .eq('email', email);
+    if (linkErr) throw linkErr;
+  }
+
   const eventType =
     club === 'arty' ? 'joined_arty' : club === 'cure' ? 'joined_cure' : 'joined_both';
   await recordEvent(event.id, email, eventType, { club });

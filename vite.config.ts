@@ -13,6 +13,7 @@ export default defineConfig({
         me:                 resolve(__dirname, 'me.html'),
         apply:              resolve(__dirname, 'apply.html'),
         adminGrantFounder:  resolve(__dirname, 'admin/grant-founder.html'),
+        adminApplications:  resolve(__dirname, 'admin/applications.html'),
       },
     },
   },

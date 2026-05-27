@@ -77,6 +77,7 @@ const TEST_EMAILS = [
   'switch@example.com',
   'cancel@example.com',
   'payfail@example.com',
+  'cure.applicant@example.com',
 ];
 
 const TEST_EVENT_IDS = [
@@ -85,6 +86,7 @@ const TEST_EVENT_IDS = [
   'evt_test_sub_updated_1',
   'evt_test_sub_deleted_1',
   'evt_test_payment_failed_1',
+  'evt_test_checkout_cure_app_1',
 ];
 
 async function cleanup() {
@@ -99,6 +101,7 @@ async function cleanup() {
       .contains('metadata', { stripe_event_id: id });
   }
   await supabase.from('members').delete().in('email', TEST_EMAILS);
+  await supabase.from('cure_applications').delete().in('email', TEST_EMAILS);
 }
 
 beforeAll(async () => {
@@ -259,6 +262,116 @@ describe('POST /api/stripe-webhook — checkout.session.completed', () => {
       .eq('member_email', 'jane.arty@example.com');
     expect(events).toHaveLength(1);
     expect(sendEmail).not.toHaveBeenCalled();
+  });
+});
+
+describe('POST /api/stripe-webhook — checkout.session.completed (CURE application)', () => {
+  it('stamps tier=cure and cure_application_id when metadata carries the application id', async () => {
+    // The accepted application the member is paying for. The members FK
+    // references this row, so it must exist before the webhook links to it.
+    const { data: app, error: appErr } = await supabase
+      .from('cure_applications')
+      .insert({
+        email: 'cure.applicant@example.com',
+        name: 'Cure Applicant',
+        questionnaire: { q1: 'a', q2: 'b', q3: 'c', q4: 'd' },
+        status: 'accepted',
+      })
+      .select('id')
+      .single();
+    expect(appErr).toBeNull();
+    const applicationId = app!.id as string;
+
+    retrieveSubscription.mockResolvedValue({
+      id: 'sub_test_cure_app_1',
+      customer: 'cus_test_cure_app_1',
+      items: {
+        data: [
+          {
+            id: 'si_test_cure_app_1',
+            price: {
+              id: 'price_cure_live',
+              metadata: { club: 'cure' },
+              product: { id: 'prod_cure_live', metadata: {} },
+            },
+          },
+        ],
+      },
+      metadata: {},
+    });
+
+    const event = {
+      id: 'evt_test_checkout_cure_app_1',
+      object: 'event',
+      type: 'checkout.session.completed',
+      data: {
+        object: {
+          id: 'cs_test_cure_app_1',
+          object: 'checkout.session',
+          customer: 'cus_test_cure_app_1',
+          customer_email: 'cure.applicant@example.com',
+          subscription: 'sub_test_cure_app_1',
+          mode: 'subscription',
+          metadata: {
+            name: 'Cure Applicant',
+            email: 'cure.applicant@example.com',
+            club: 'cure',
+            cure_application_id: applicationId,
+          },
+        },
+      },
+    };
+
+    const res = await callWith(event);
+    expect(res.statusCode).toBe(200);
+
+    const { data: member } = await supabase
+      .from('members')
+      .select('email, tier, cure_active, cure_application_id')
+      .eq('email', 'cure.applicant@example.com')
+      .single();
+    expect(member).toBeTruthy();
+    expect(member!.cure_active).toBe(true);
+    expect(member!.tier).toBe('cure');
+    expect(member!.cure_application_id).toBe(applicationId);
+
+    const { data: events } = await supabase
+      .from('membership_events')
+      .select('event_type')
+      .eq('member_email', 'cure.applicant@example.com');
+    expect(events).toHaveLength(1);
+    expect(events![0].event_type).toBe('joined_cure');
+  });
+
+  it('leaves tier untouched for a plain Arty checkout (no application metadata)', async () => {
+    retrieveSubscription.mockResolvedValue({
+      id: 'sub_test_arty_1',
+      customer: 'cus_test_arty_1',
+      items: {
+        data: [
+          {
+            id: 'si_test_arty_1',
+            price: {
+              id: 'price_arty_live',
+              metadata: { club: 'arty' },
+              product: { id: 'prod_arty_live', metadata: {} },
+            },
+          },
+        ],
+      },
+      metadata: {},
+    });
+
+    const res = await callWith(checkoutCompletedFixture);
+    expect(res.statusCode).toBe(200);
+
+    const { data: member } = await supabase
+      .from('members')
+      .select('tier, cure_application_id')
+      .eq('email', 'jane.arty@example.com')
+      .single();
+    expect(member!.tier).toBeNull();
+    expect(member!.cure_application_id).toBeNull();
   });
 });
 

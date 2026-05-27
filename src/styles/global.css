@@ -443,3 +443,150 @@ input, textarea, button {
   flex: 1;
   min-width: 140px;
 }
+
+/* ─── Admin — CURE applications review queue ──────────────────────── */
+
+.applications-filter {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.applications-filter button {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-size: 0.95rem;
+  color: var(--color-muted);
+}
+
+.applications-filter button.active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 0 1px rgba(155, 35, 53, 0.18);
+}
+
+.applications-empty,
+.applications-status {
+  text-align: center;
+  color: var(--color-muted);
+  font-style: italic;
+  margin: 48px auto;
+}
+
+.applications-list {
+  display: grid;
+  gap: 22px;
+  margin-bottom: 48px;
+}
+
+.application-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 24px 26px;
+  text-align: left;
+}
+
+.application-card .application-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+  margin-bottom: 4px;
+}
+
+.application-card .application-name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--color-text);
+}
+
+.application-card .application-email {
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+.application-card .application-meta {
+  color: var(--color-faint);
+  font-size: 0.85rem;
+  margin: 0 0 14px;
+}
+
+.application-card .application-status-pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-border);
+  color: var(--color-faint);
+}
+
+.existing-member-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(90, 62, 10, 0.1);
+  color: var(--color-accent);
+}
+
+.application-qa {
+  margin: 0 0 20px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 14px;
+}
+
+.application-qa .qa-q {
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 14px 0 4px;
+  font-size: 0.95rem;
+}
+
+.application-qa .qa-a {
+  margin: 0;
+  color: var(--color-muted);
+  white-space: pre-wrap;
+}
+
+.application-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.application-actions .submit {
+  flex: 0 1 auto;
+  min-width: 160px;
+}
+
+/* Understated reject — deliberately not the red danger treatment. */
+.submit.understated {
+  background: transparent;
+  color: var(--color-faint);
+  border: 1px solid var(--color-border);
+}
+
+.submit.understated:hover:not(:disabled) {
+  border-color: var(--color-faint);
+  color: var(--color-muted);
+}
+
+.applications-confirm {
+  background: #f2f7f2;
+  border: 1px solid #c8d8c4;
+  color: #2f4a2c;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+}
