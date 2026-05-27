@@ -2,13 +2,15 @@
 // src/pages/apply.tsx
 //
 // CURE Club application page. Renders the canonical five-question
-// questionnaire (src/content/apply-questions.json), POSTs to
+// questionnaire (api/_lib/apply-questions.json), POSTs to
 // /api/membership/apply, and shows a confirmation on success.
 // ─────────────────────────────────────────────────────────────────
 
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import questions from '../content/apply-questions.json';
+// Lives under api/_lib/ (not src/content/) so Vercel's serverless bundler
+// includes it for /api/membership/apply; Vite resolves it for the page from here.
+import questions from '../../api/_lib/apply-questions.json';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 
 import ApplyPage from '../src/pages/apply';
-import questions from '../src/content/apply-questions.json';
+import questions from '../api/_lib/apply-questions.json';
 
 type Question = { id: string; label: string; required: boolean; max_chars: number };
 const QUESTIONS = questions as Question[];

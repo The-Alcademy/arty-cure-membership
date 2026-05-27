@@ -1,11 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
-import questions from '../../src/content/apply-questions.json';
+import questions from '../_lib/apply-questions.json';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Canonical question set lives in src/content/apply-questions.json so the page,
+// Canonical question set lives in api/_lib/apply-questions.json so the page,
 // this endpoint, and the admin notification all share one source of truth.
 const QUESTIONS = questions as Array<{
   id: string;
