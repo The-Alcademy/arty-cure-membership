@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
-import questions from '../_lib/apply-questions.json';
+import questions from '../_lib/apply-questions.json' with { type: 'json' };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
